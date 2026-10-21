@@ -19,9 +19,10 @@ export const useAuthorize = ({
 }) => {
   const { recentLogin } = useRecentLogin();
   const { user, signOut } = useAuth();
-  const { clientId, clientScopes, tokenScopes, url, state } = useLoaderData({
-    from: '/_auth-required/authorize',
-  });
+  const { clientId, clientScopes, tokenScopes, redirectUri, state } =
+    useLoaderData({
+      from: '/_auth-required/authorize',
+    });
   const { prompt, ...search } = useSearch({
     from: '/_auth-required/authorize',
   });
@@ -36,19 +37,20 @@ export const useAuthorize = ({
     [user, requiredScopes],
   );
 
+  // the backend checks redirect_uri against the client's registered URLs before redirecting,
+  // which this page cannot do because the public client info leaves the URLs out
   const redirect = useCallback(
-    (params: { error?: string; error_description?: string }) => {
-      const searchParams = new URLSearchParams();
-      Object.entries(params)
-        .filter(([, value]) => value !== undefined)
-        .forEach(([key, value]) => searchParams.append(key, value));
-      if (state) searchParams.append('state', state);
+    (params: { error: string; error_description?: string }) => {
+      const query = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        ...params,
+      });
+      if (state) query.set('state', state);
 
-      const newUrl = new URL(url);
-      newUrl.search = searchParams.toString();
-      window.location.href = newUrl.toString();
+      window.location.href = `${import.meta.env.VITE_API_URL}/oauth/authorize/error?${query.toString()}`;
     },
-    [url, state],
+    [clientId, redirectUri, state],
   );
 
   const onCancel = useCallback(() => {
@@ -119,7 +121,6 @@ export const useAuthorize = ({
     signOut,
     state,
     tokenScopes,
-    url,
     user,
   ]);
 
