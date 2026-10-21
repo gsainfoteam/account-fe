@@ -70,10 +70,11 @@ export const useAuthorize = ({
       }
 
       const query = new URLSearchParams(search);
-      query.set('scope', [...tokenScopes, ...agreed].join(' '));
+      const granted = agreed.filter((scope) => clientScopes.includes(scope));
+      query.set('scope', [...tokenScopes, ...granted].join(' '));
       window.location.href = `${import.meta.env.VITE_API_URL}/oauth/authorize?${query.toString()}`;
     },
-    [isRequiredScopeNotVerified, redirect, search, tokenScopes],
+    [clientScopes, isRequiredScopeNotVerified, redirect, search, tokenScopes],
   );
 
   useEffect(() => {
