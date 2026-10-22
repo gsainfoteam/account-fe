@@ -517,7 +517,8 @@
       },
       "openid": {
         "title": "OpenID",
-        "enable": "id_token 활성화"
+        "enable": "id_token 활성화",
+        "auth_method": "토큰 엔드포인트 인증 방식"
       },
       "scopes": {
         "title": "스코프 (Scopes)",

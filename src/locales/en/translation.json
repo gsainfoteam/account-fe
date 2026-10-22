@@ -511,7 +511,8 @@
       },
       "openid": {
         "title": "OpenID",
-        "enable": "Enable id_token"
+        "enable": "Enable id_token",
+        "auth_method": "Token endpoint authentication"
       },
       "scopes": {
         "title": "Scopes (Scopes)",
