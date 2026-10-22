@@ -62,9 +62,10 @@ function Inner({
   scopes: string[];
 }) {
   const { t } = useTranslation();
-  const { form, onSubmit, onCancel, isRequiredScopeNotVerified } = useAuthorize(
-    { client, scopes },
-  );
+  const { form, onSubmit, onCancel, isRequiredScopeNotVerified, isDeciding } =
+    useAuthorize({ client, scopes });
+
+  if (isDeciding) return null;
 
   return (
     <FormProvider {...form}>

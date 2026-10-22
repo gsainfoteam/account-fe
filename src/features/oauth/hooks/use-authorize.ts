@@ -1,10 +1,9 @@
 import { useLoaderData, useSearch } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { checkRequiredScopeNotVerified } from '../utils';
+import { checkRequiredScopeNotVerified, reportAuthorizeError } from '../utils';
 
 import { useAuthorizeForm } from './use-authorize-form';
-import { useRecentLogin } from './use-recent-login';
 
 import { type components } from '@/@types/api-schema';
 import { useAuth } from '@/features/auth';
@@ -17,8 +16,7 @@ export const useAuthorize = ({
   client: components['schemas']['ClientPublicResDto'];
   scopes: string[];
 }) => {
-  const { recentLogin } = useRecentLogin();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { clientId, clientScopes, tokenScopes, redirectUri, state } =
     useLoaderData({
       from: '/_auth-required/authorize',
@@ -37,27 +35,14 @@ export const useAuthorize = ({
     [user, requiredScopes],
   );
 
-  // the backend checks redirect_uri against the client's registered URLs before redirecting,
-  // which this page cannot do because the public client info leaves the URLs out
   const redirect = useCallback(
-    (params: { error: string; error_description?: string }) => {
-      const query = new URLSearchParams({
-        client_id: clientId,
-        redirect_uri: redirectUri,
-        ...params,
-      });
-      if (state) query.set('state', state);
-
-      window.location.href = `${import.meta.env.VITE_API_URL}/oauth/authorize/error?${query.toString()}`;
-    },
+    (params: { error: string; errorDescription?: string }) =>
+      reportAuthorizeError({ clientId, redirectUri, state, ...params }),
     [clientId, redirectUri, state],
   );
 
   const onCancel = useCallback(() => {
-    redirect({
-      error: 'access_denied',
-      error_description: 'user_cancelled',
-    });
+    redirect({ error: 'access_denied', errorDescription: 'user_cancelled' });
   }, [redirect]);
 
   const authorize = useCallback(
@@ -65,7 +50,7 @@ export const useAuthorize = ({
       if (isRequiredScopeNotVerified) {
         return redirect({
           error: 'access_denied',
-          error_description: 'verification_required',
+          errorDescription: 'verification_required',
         });
       }
 
@@ -77,53 +62,26 @@ export const useAuthorize = ({
     [clientScopes, isRequiredScopeNotVerified, redirect, search, tokenScopes],
   );
 
-  useEffect(() => {
-    const consented = requiredScopes.every((s) => scopes.includes(s));
-
-    const consentedScopes = (scopes as ClientScopeType[]) ?? [];
+  // decided during render so the consent screen is never painted when it will not be used
+  const decision = useMemo(() => {
+    const consented =
+      requiredScopes.every((s) => scopes.includes(s)) &&
+      !tokenScopes.includes('offline_access');
 
     if (prompt === 'none') {
-      if (!user)
-        // never happens, but just in case
-        return redirect({
-          error: 'access_denied',
-          error_description: 'login_required',
-        });
-      if (!consented)
-        return redirect({
-          error: 'access_denied',
-          error_description: 'consent_required',
-        });
-      if (tokenScopes.includes('offline_access'))
-        return redirect({
-          error: 'access_denied',
-          error_description: 'consent_required',
-        });
-      if (isRequiredScopeNotVerified) return;
-      return authorize(consentedScopes);
+      if (!consented) return 'consent_required';
+      if (isRequiredScopeNotVerified) return 'interaction_required';
+      return 'authorize';
     }
+    if (prompt === 'consent') return null;
+    if (consented && !isRequiredScopeNotVerified) return 'authorize';
+    return null;
+  }, [isRequiredScopeNotVerified, prompt, requiredScopes, scopes, tokenScopes]);
 
-    if (prompt === 'consent') return; // show consent screen
-
-    if (consented) {
-      if (tokenScopes.includes('offline_access')) return;
-      if (isRequiredScopeNotVerified) return;
-      return authorize(consentedScopes);
-    }
-  }, [
-    authorize,
-    clientId,
-    scopes,
-    isRequiredScopeNotVerified,
-    prompt,
-    recentLogin,
-    redirect,
-    requiredScopes,
-    signOut,
-    state,
-    tokenScopes,
-    user,
-  ]);
+  useEffect(() => {
+    if (decision === 'authorize') authorize(scopes as ClientScopeType[]);
+    else if (decision) redirect({ error: decision });
+  }, [authorize, decision, redirect, scopes]);
 
   return {
     ...useAuthorizeForm({
@@ -131,6 +89,7 @@ export const useAuthorize = ({
       onDone: authorize,
     }),
     isRequiredScopeNotVerified,
+    isDeciding: decision !== null,
     onCancel,
   };
 };
