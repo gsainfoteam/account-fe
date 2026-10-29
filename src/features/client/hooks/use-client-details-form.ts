@@ -7,20 +7,23 @@ import { z } from 'zod';
 
 import { type Client } from './use-client';
 
+import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schema';
 import { patchClient } from '@/data/client';
 import { ClientScopeEnum } from '@/routes/_auth-required/authorize';
 
 const schema = z.object({
   name: z.string().refine((v) => v.trim() !== ''),
   idTokenAllowed: z.boolean(),
-  tokenEndpointAuthMethod: z.enum([
-    'none',
-    'client_secret_basic',
-    'client_secret_post',
-  ]),
+  // zod 3 z.enum takes only a literal tuple, not the generated array
+  tokenEndpointAuthMethod: z.custom<TokenEndpointAuthMethod>((v) =>
+    updateClientDtoTokenEndpointAuthMethodValues.some((m) => m === v),
+  ),
   scopes: z.record(ClientScopeEnum, z.enum(['no', 'optional', 'required'])),
   urls: z.array(z.string().url()),
 });
+
+type TokenEndpointAuthMethod =
+  (typeof updateClientDtoTokenEndpointAuthMethodValues)[number];
 
 export type ClientDetailsFormSchema = z.infer<typeof schema>;
 

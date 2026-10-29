@@ -23,7 +23,7 @@
 ```txt
 src/
 ├── @types/                 # TypeScript 타입 정의
-│   ├── api-schema.d.ts     # OpenAPI 스키마 타입
+│   ├── api-schema.ts       # OpenAPI 스키마 타입
 │   ├── env.d.ts            # 환경 변수 타입
 │   ├── history-state.d.ts  # 히스토리 상태 타입
 │   └── i18next.d.ts        # i18next 타입

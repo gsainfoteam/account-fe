@@ -25,7 +25,7 @@ dist-ssr
 
 #
 src/routeTree.gen.ts
-src/@types/api-schema.d.ts
+src/@types/api-schema.ts
 
 *storybook.log
 storybook-static

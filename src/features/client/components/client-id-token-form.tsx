@@ -6,13 +6,10 @@ import { type ClientDetailsFormSchema } from '../hooks/use-client-details-form';
 import { useClientMembers } from '../hooks/use-client-members';
 import { hasRoleAtLeast } from '../utils/role';
 
+import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schema';
 import { Label, MultiStateSwitch, Switch } from '@/features/core';
 
-const authMethods = [
-  'none',
-  'client_secret_basic',
-  'client_secret_post',
-] as const;
+const authMethods = updateClientDtoTokenEndpointAuthMethodValues;
 
 export function ClientIdTokenForm({ client }: { client: Client }) {
   const { t } = useTranslation();
