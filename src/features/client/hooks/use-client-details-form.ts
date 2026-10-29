@@ -18,7 +18,10 @@ const schema = z.object({
   tokenEndpointAuthMethod: z.custom<TokenEndpointAuthMethod>((v) =>
     updateClientDtoTokenEndpointAuthMethodValues.some((m) => m === v),
   ),
-  scopes: z.record(ClientScopeEnum, z.enum(['no', 'optional', 'required'])),
+  scopes: z.partialRecord(
+    ClientScopeEnum,
+    z.enum(['no', 'optional', 'required']),
+  ),
   urls: z.array(z.string().url()),
 });
 

@@ -24,7 +24,7 @@ const createSchema = (t: TFunction) =>
         .min(1, t('register.steps.info.inputs.name.errors.format')),
       firstName: z.string().optional(),
       birthDate: z.date({
-        required_error: t(
+        error: t(
           'register.steps.info.inputs.birth_date.errors.format',
         ),
       }),

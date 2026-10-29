@@ -11,7 +11,7 @@ import {
 } from '@/routes/_auth-required/authorize';
 
 export const createSchema = () =>
-  z.object({ scopes: z.record(ClientScopeEnum, z.boolean()) });
+  z.object({ scopes: z.partialRecord(ClientScopeEnum, z.boolean()) });
 
 export type ConsentFormSchema = z.infer<ReturnType<typeof createSchema>>;
 
