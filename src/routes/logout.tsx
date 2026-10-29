@@ -3,12 +3,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { useAuth } from '@/features/auth';
+import { useAuth, useToken } from '@/features/auth';
 import { Button, FunnelLayout } from '@/features/core';
 
 const LogoutPage = () => {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
+  const { token } = useToken();
   const navigate = useNavigate();
   const { client_id, post_logout_redirect_uri, state } = Route.useSearch();
   const [pending, setPending] = useState(false);
@@ -24,17 +25,18 @@ const LogoutPage = () => {
         client_id,
         post_logout_redirect_uri,
       });
-      if (state) query.set('state', state);
+      if (state !== undefined) query.set('state', state);
       window.location.href = `${import.meta.env.VITE_API_URL}/oauth/logout/redirect?${query.toString()}`;
     },
     [client_id, navigate, post_logout_redirect_uri, state],
   );
 
   // also runs right after a successful signOut, which clears the token.
-  // with no IdP session there is nothing a forged link could end, so the confirmation is skipped
+  // with no IdP session there is nothing a forged link could end, so the confirmation is skipped.
+  // keyed on the token, not user: user is also null when /user fails, and the session would survive
   useEffect(() => {
-    if (user === null) void leave('/auth/login');
-  }, [leave, user]);
+    if (!token) void leave('/auth/login');
+  }, [leave, token]);
 
   const confirm = async () => {
     setPending(true);
@@ -46,7 +48,7 @@ const LogoutPage = () => {
   return (
     <FunnelLayout
       hideUndo
-      loading={!user || pending}
+      loading={user === undefined || pending}
       title={t('logout.title')}
       stepTitle={t('logout.confirm.title')}
       description={
