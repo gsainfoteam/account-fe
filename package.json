@@ -4,7 +4,7 @@
   "version": "2.6.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bun run gen-oas && vite",
     "build": "bun run gen-oas && tsr generate && tsc -b && vite build",
     "build:analyze": "ANALYZE=1 bun run build",
     "lint": "eslint .",
