@@ -2,13 +2,15 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { type Client } from '../hooks/use-client';
-import { type ClientDetailsFormSchema } from '../hooks/use-client-details-form';
+import {
+  type ClientDetailsFormSchema,
+  SCOPE_CHOICES as choices,
+} from '../hooks/use-client-details-form';
 import { useClientMembers } from '../hooks/use-client-members';
 import { hasRoleAtLeast } from '../utils/role';
 
 import { Label, MultiStateSwitch } from '@/features/core';
 
-const choices = ['no', 'optional', 'required'] as const;
 type Choice = (typeof choices)[number];
 
 const ScopeSwitch = ({

@@ -11,22 +11,15 @@ import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schem
 import { patchClient } from '@/data/client';
 import { ClientScopeEnum } from '@/routes/_auth-required/authorize';
 
+export const SCOPE_CHOICES = ['no', 'optional', 'required'] as const;
+
 const schema = z.object({
   name: z.string().refine((v) => v.trim() !== ''),
   idTokenAllowed: z.boolean(),
-  // zod 3 z.enum takes only a literal tuple, not the generated array
-  tokenEndpointAuthMethod: z.custom<TokenEndpointAuthMethod>((v) =>
-    updateClientDtoTokenEndpointAuthMethodValues.some((m) => m === v),
-  ),
-  scopes: z.partialRecord(
-    ClientScopeEnum,
-    z.enum(['no', 'optional', 'required']),
-  ),
+  tokenEndpointAuthMethod: z.enum(updateClientDtoTokenEndpointAuthMethodValues),
+  scopes: z.partialRecord(ClientScopeEnum, z.enum(SCOPE_CHOICES)),
   urls: z.array(z.string().url()),
 });
-
-type TokenEndpointAuthMethod =
-  (typeof updateClientDtoTokenEndpointAuthMethodValues)[number];
 
 export type ClientDetailsFormSchema = z.infer<typeof schema>;
 
