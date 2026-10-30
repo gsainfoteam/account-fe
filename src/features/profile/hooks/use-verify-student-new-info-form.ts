@@ -21,7 +21,7 @@ const createSchema = (t: TFunction) =>
         ),
       firstName: z.string().optional(),
       birthDate: z.date({
-        required_error: t(
+        error: t(
           'verify_student_id.steps.new_info.inputs.birth_date.errors.format',
         ),
       }),

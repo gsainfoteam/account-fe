@@ -18,7 +18,7 @@ import {
 const createSchema = (t: TFunction) =>
   z.object({
     birthDate: z.date({
-      required_error: t(
+      error: t(
         'verify_student_id.steps.info.inputs.birth_date.errors.format',
       ),
     }),

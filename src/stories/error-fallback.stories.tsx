@@ -35,16 +35,14 @@ const zodError = new ZodError([
   {
     code: 'invalid_type',
     expected: 'string',
-    received: 'undefined',
     path: ['email'],
     message: 'Required',
   },
   {
     code: 'too_small',
     minimum: 8,
-    type: 'string',
+    origin: 'string',
     inclusive: true,
-    exact: false,
     path: ['password'],
     message: '8자 이상이어야 합니다.',
   },
