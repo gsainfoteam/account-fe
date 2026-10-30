@@ -52,10 +52,11 @@ export const useAuth = () => {
         } else {
           toast.error(t('toast.unknown_error'));
         }
-        return;
+        return false;
       }
 
       saveToken(shouldRedirect ? null : undefined);
+      return true;
     },
     [saveToken, t],
   );

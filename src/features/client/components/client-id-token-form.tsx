@@ -6,7 +6,10 @@ import { type ClientDetailsFormSchema } from '../hooks/use-client-details-form';
 import { useClientMembers } from '../hooks/use-client-members';
 import { hasRoleAtLeast } from '../utils/role';
 
-import { Switch } from '@/features/core';
+import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schema';
+import { Label, MultiStateSwitch, Switch } from '@/features/core';
+
+const authMethods = updateClientDtoTokenEndpointAuthMethodValues;
 
 export function ClientIdTokenForm({ client }: { client: Client }) {
   const { t } = useTranslation();
@@ -37,6 +40,20 @@ export function ClientIdTokenForm({ client }: { client: Client }) {
             )}
           />
         </div>
+        <Controller
+          control={control}
+          name="tokenEndpointAuthMethod"
+          render={({ field: { value, disabled, onChange } }) => (
+            <Label text={t('services.detail.openid.auth_method')}>
+              <MultiStateSwitch
+                selected={authMethods.indexOf(value)}
+                disabled={disabled || isDeleted || !canManage}
+                onChangeIndex={(index) => onChange(authMethods[index])}
+                labels={[...authMethods]}
+              />
+            </Label>
+          )}
+        />
       </div>
     </div>
   );

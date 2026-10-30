@@ -224,6 +224,17 @@
       "login_with_password": "Login With Password"
     }
   },
+  "logout": {
+    "title": "Log out",
+    "confirm": {
+      "title": "Log out of your Infoteam account?",
+      "description": "This ends your Infoteam account sign-in in this browser, so other services using it will ask you to sign in again.",
+      "failed": "Could not log out. Please try again.",
+      "button": "Log out",
+      "retry": "Try again",
+      "cancel": "Cancel"
+    }
+  },
   "authorize": {
     "title": "You are trying to log in to\n'{{client}}' service with\nInfoteam Account",
     "description": "By continuing, the following information will be shared with '{{client}}'.",
@@ -511,7 +522,8 @@
       },
       "openid": {
         "title": "OpenID",
-        "enable": "Enable id_token"
+        "enable": "Enable id_token",
+        "auth_method": "Token endpoint authentication"
       },
       "scopes": {
         "title": "Scopes (Scopes)",

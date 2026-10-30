@@ -7,15 +7,23 @@ import { z } from 'zod';
 
 import { type Client } from './use-client';
 
+import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schema';
 import { patchClient } from '@/data/client';
 import { ClientScopeEnum } from '@/routes/_auth-required/authorize';
 
 const schema = z.object({
   name: z.string().refine((v) => v.trim() !== ''),
   idTokenAllowed: z.boolean(),
+  // zod 3 z.enum takes only a literal tuple, not the generated array
+  tokenEndpointAuthMethod: z.custom<TokenEndpointAuthMethod>((v) =>
+    updateClientDtoTokenEndpointAuthMethodValues.some((m) => m === v),
+  ),
   scopes: z.record(ClientScopeEnum, z.enum(['no', 'optional', 'required'])),
   urls: z.array(z.string().url()),
 });
+
+type TokenEndpointAuthMethod =
+  (typeof updateClientDtoTokenEndpointAuthMethodValues)[number];
 
 export type ClientDetailsFormSchema = z.infer<typeof schema>;
 
@@ -29,6 +37,7 @@ export const useClientDetailsForm = (client: Client, onUpdated: () => void) => {
     defaultValues: {
       name: client.name,
       idTokenAllowed: client.idTokenAllowed,
+      tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
       scopes: Object.fromEntries([
         ...client.scopes.map((v) => [v, 'required']),
         ...client.optionalScopes.map((v) => [v, 'optional']),
@@ -51,6 +60,7 @@ export const useClientDetailsForm = (client: Client, onUpdated: () => void) => {
       form.reset({
         name: client.name,
         idTokenAllowed: client.idTokenAllowed,
+        tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
         scopes: Object.fromEntries([
           ...client.scopes.map((v) => [v, 'required']),
           ...client.optionalScopes.map((v) => [v, 'optional']),
@@ -91,6 +101,7 @@ export const useClientDetailsForm = (client: Client, onUpdated: () => void) => {
                 .filter(([, value]) => value === 'optional')
                 .map(([key]) => key),
               idTokenAllowed: values.idTokenAllowed,
+              tokenEndpointAuthMethod: values.tokenEndpointAuthMethod,
               urls,
             },
           );
@@ -116,6 +127,7 @@ export const useClientDetailsForm = (client: Client, onUpdated: () => void) => {
           form.reset({
             name: res.data.name,
             idTokenAllowed: res.data.idTokenAllowed,
+            tokenEndpointAuthMethod: res.data.tokenEndpointAuthMethod,
             scopes: Object.fromEntries([
               ...res.data.scopes.map((v) => [v, 'required']),
               ...res.data.optionalScopes.map((v) => [v, 'optional']),
