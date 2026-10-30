@@ -49,7 +49,9 @@ export function ClientIdTokenForm({ client }: { client: Client }) {
                 selected={authMethods.indexOf(value)}
                 disabled={disabled || isDeleted || !canManage}
                 onChangeIndex={(index) => onChange(authMethods[index])}
-                labels={[...authMethods]}
+                labels={authMethods.map((method) =>
+                  t(`services.detail.openid.auth_methods.${method}`),
+                )}
               />
             </Label>
           )}

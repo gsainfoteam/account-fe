@@ -529,7 +529,12 @@
       "openid": {
         "title": "OpenID",
         "enable": "id_token 활성화",
-        "auth_method": "토큰 엔드포인트 인증 방식"
+        "auth_method": "토큰 엔드포인트 인증 방식",
+        "auth_methods": {
+          "none": "없음",
+          "client_secret_post": "POST 본문",
+          "client_secret_basic": "Basic 헤더"
+        }
       },
       "scopes": {
         "title": "스코프 (Scopes)",
