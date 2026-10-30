@@ -23,7 +23,7 @@ export function AuthorizeFrame() {
     from: '/_auth-required/authorize',
   });
   const { client } = useClient(clientId);
-  const { scopes, isLoading } = useConsentedScopes(clientId);
+  const { scopes, hasConsent, isLoading } = useConsentedScopes(clientId);
 
   const { recentLogin } = useRecentLogin();
   const { signOut } = useAuth();
@@ -50,20 +50,22 @@ export function AuthorizeFrame() {
   } else if (isLoading) {
     return null;
   } else {
-    return <Inner client={client} scopes={scopes} />;
+    return <Inner client={client} scopes={scopes} hasConsent={hasConsent} />;
   }
 }
 
 function Inner({
   client,
   scopes,
+  hasConsent,
 }: {
   client: components['schemas']['ClientPublicResDto'];
   scopes: string[];
+  hasConsent: boolean;
 }) {
   const { t } = useTranslation();
   const { form, onSubmit, onCancel, isRequiredScopeNotVerified, isDeciding } =
-    useAuthorize({ client, scopes });
+    useAuthorize({ client, scopes, hasConsent });
 
   if (isDeciding) return null;
 

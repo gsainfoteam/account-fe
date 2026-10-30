@@ -12,9 +12,11 @@ import { type ClientScopeType } from '@/routes/_auth-required/authorize';
 export const useAuthorize = ({
   client,
   scopes,
+  hasConsent,
 }: {
   client: components['schemas']['ClientPublicResDto'];
   scopes: string[];
+  hasConsent: boolean;
 }) => {
   const { user } = useAuth();
   const { clientId, clientScopes, tokenScopes, redirectUri, state } =
@@ -64,7 +66,9 @@ export const useAuthorize = ({
 
   // decided during render so the consent screen is never painted when it will not be used
   const decision = useMemo(() => {
+    // without a consent record the backend denies even a client with no required scopes
     const consented =
+      hasConsent &&
       requiredScopes.every((s) => scopes.includes(s)) &&
       !tokenScopes.includes('offline_access');
 
@@ -76,7 +80,14 @@ export const useAuthorize = ({
     if (prompt === 'consent') return null;
     if (consented && !isRequiredScopeNotVerified) return 'authorize';
     return null;
-  }, [isRequiredScopeNotVerified, prompt, requiredScopes, scopes, tokenScopes]);
+  }, [
+    hasConsent,
+    isRequiredScopeNotVerified,
+    prompt,
+    requiredScopes,
+    scopes,
+    tokenScopes,
+  ]);
 
   useEffect(() => {
     if (decision === 'authorize') authorize(scopes as ClientScopeType[]);
