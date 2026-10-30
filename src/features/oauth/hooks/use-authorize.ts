@@ -16,7 +16,7 @@ export const useAuthorize = ({
 }: {
   client: components['schemas']['ClientPublicResDto'];
   scopes: string[];
-  hasConsent: boolean;
+  hasConsent: boolean | undefined;
 }) => {
   const { user } = useAuth();
   const { clientId, clientScopes, tokenScopes, redirectUri, state } =
@@ -68,11 +68,12 @@ export const useAuthorize = ({
   const decision = useMemo(() => {
     // without a consent record the backend denies even a client with no required scopes
     const consented =
-      hasConsent &&
+      hasConsent === true &&
       requiredScopes.every((s) => scopes.includes(s)) &&
       !tokenScopes.includes('offline_access');
 
     if (prompt === 'none') {
+      if (hasConsent === undefined) return 'server_error';
       if (!consented) return 'consent_required';
       if (isRequiredScopeNotVerified) return 'interaction_required';
       return 'authorize';

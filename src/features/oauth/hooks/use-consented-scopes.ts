@@ -11,7 +11,8 @@ export const useConsentedScopes = (clientId: string) => {
 
   return {
     scopes: consent?.scopes ?? [],
-    hasConsent: consent !== undefined,
+    // undefined when the lookup failed, so a failure is not mistaken for a missing consent
+    hasConsent: error ? undefined : consent !== undefined,
     isLoading,
     error,
   };

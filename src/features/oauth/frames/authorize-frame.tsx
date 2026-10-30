@@ -61,7 +61,7 @@ function Inner({
 }: {
   client: components['schemas']['ClientPublicResDto'];
   scopes: string[];
-  hasConsent: boolean;
+  hasConsent: boolean | undefined;
 }) {
   const { t } = useTranslation();
   const { form, onSubmit, onCancel, isRequiredScopeNotVerified, isDeciding } =
