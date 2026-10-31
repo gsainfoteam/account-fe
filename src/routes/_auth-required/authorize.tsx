@@ -1,16 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
+import {
+  type components,
+  clientPublicResDtoScopesValues,
+  pathsOauthAuthorizeGetParametersQueryCode_challenge_methodValues,
+} from '@/@types/api-schema';
 import { AuthorizeFrame } from '@/features/oauth';
 
-export const ClientScopeEnum = z.enum([
-  'name',
-  'profile',
-  'picture',
-  'email',
-  'phone_number',
-  'student_id',
-]);
+// openapi-typescript types the values of an array field as the array itself
+export const ClientScopeEnum = z.enum(
+  clientPublicResDtoScopesValues as readonly components['schemas']['ClientPublicResDto']['scopes'][number][],
+);
 export type ClientScopeType = z.infer<typeof ClientScopeEnum>;
 
 export const TokenScopeEnum = z.enum(['openid', 'offline_access']);
@@ -34,7 +35,9 @@ const schema = z.object({
   response_type: z.string().refine((v) => v === 'code'),
   prompt: z.enum(['none', 'login', 'consent']).optional(),
   code_challenge: z.string(),
-  code_challenge_method: z.enum(['S256', 'plain']),
+  code_challenge_method: z.enum(
+    pathsOauthAuthorizeGetParametersQueryCode_challenge_methodValues,
+  ),
 });
 
 const validateSchema = schema

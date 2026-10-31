@@ -9,7 +9,10 @@ import { type Client } from './use-client';
 
 import { updateClientDtoTokenEndpointAuthMethodValues } from '@/@types/api-schema';
 import { patchClient } from '@/data/client';
-import { ClientScopeEnum } from '@/routes/_auth-required/authorize';
+import {
+  ClientScopeEnum,
+  type ClientScopeType,
+} from '@/routes/_auth-required/authorize';
 
 export const SCOPE_CHOICES = ['no', 'optional', 'required'] as const;
 
@@ -92,10 +95,10 @@ export const useClientDetailsForm = (client: Client, onUpdated: () => void) => {
               name: values.name,
               scopes: Object.entries(values.scopes ?? {})
                 .filter(([, value]) => value === 'required')
-                .map(([key]) => key),
+                .map(([key]) => key as ClientScopeType),
               optionalScopes: Object.entries(values.scopes ?? {})
                 .filter(([, value]) => value === 'optional')
-                .map(([key]) => key),
+                .map(([key]) => key as ClientScopeType),
               idTokenAllowed: values.idTokenAllowed,
               tokenEndpointAuthMethod: values.tokenEndpointAuthMethod,
               urls,
