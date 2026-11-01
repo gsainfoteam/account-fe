@@ -38,8 +38,12 @@ export const useAuthorize = ({
   );
 
   const redirect = useCallback(
-    (params: { error: string; errorDescription?: string }) =>
-      reportAuthorizeError({ clientId, redirectUri, state, ...params }),
+    (
+      params: Pick<
+        Parameters<typeof reportAuthorizeError>[0],
+        'error' | 'errorDescription'
+      >,
+    ) => reportAuthorizeError({ clientId, redirectUri, state, ...params }),
     [clientId, redirectUri, state],
   );
 

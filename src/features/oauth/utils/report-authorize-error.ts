@@ -1,3 +1,7 @@
+import { type paths } from '@/@types/api-schema';
+
+type ErrorQuery = paths['/oauth/authorize/error']['get']['parameters']['query'];
+
 // the backend checks redirect_uri against the client's registered URLs before redirecting,
 // which this page cannot do because the public client info leaves the URLs out
 export const reportAuthorizeError = ({
@@ -10,8 +14,8 @@ export const reportAuthorizeError = ({
   clientId: string;
   redirectUri: string;
   state?: string;
-  error: string;
-  errorDescription?: string;
+  error: ErrorQuery['error'];
+  errorDescription?: ErrorQuery['error_description'];
 }) => {
   const query = new URLSearchParams({
     client_id: clientId,
