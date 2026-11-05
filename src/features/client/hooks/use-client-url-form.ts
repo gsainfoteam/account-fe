@@ -4,9 +4,14 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+const REDIRECT_URI = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/;
+
 const createSchema = (t: TFunction) =>
   z.object({
-    newUrl: z.string().url(t('services.detail.urls.errors.format')),
+    newUrl: z
+      .string()
+      .url(t('services.detail.urls.errors.format'))
+      .regex(REDIRECT_URI, t('services.detail.urls.errors.format')),
   });
 
 export type ClientUrlFormSchema = z.infer<ReturnType<typeof createSchema>>;

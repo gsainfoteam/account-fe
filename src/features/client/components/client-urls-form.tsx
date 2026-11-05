@@ -87,7 +87,7 @@ export function ClientUrlsForm({ client }: { client: Client }) {
                   !canManage
                 }
                 onClick={() => {
-                  setValue('urls', [newUrl, ...(urls ?? [])], {
+                  setValue('urls', [newUrl.trim(), ...(urls ?? [])], {
                     shouldDirty: true,
                   });
                   reset();
