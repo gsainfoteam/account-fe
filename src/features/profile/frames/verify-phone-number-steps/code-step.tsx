@@ -1,3 +1,4 @@
+import parsePhoneNumber from 'libphonenumber-js';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,8 @@ export function CodeStep({
     },
   });
   const { user } = useAuth();
+  const isKorean =
+    parsePhoneNumber(context.phoneNumber, 'KR')?.country === 'KR';
 
   useEffect(() => {
     if (remainTime <= 0) {
@@ -74,7 +77,11 @@ export function CodeStep({
     >
       <FunnelLayout
         title={t('verify_phone_number.title')}
-        stepTitle={t('verify_phone_number.steps.code.title')}
+        stepTitle={t(
+          isKorean
+            ? 'verify_phone_number.steps.code.title_kakao'
+            : 'verify_phone_number.steps.code.title',
+        )}
         button={
           <Button
             variant="primary"

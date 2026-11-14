@@ -1,3 +1,4 @@
+import parsePhoneNumber from 'libphonenumber-js';
 import { useFormState } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +33,8 @@ export function TelCodeStep({
     isMaxCountReached,
   } = useTelCodeForm({ context, onNext });
   const { isSubmitting, isValid, isDirty, errors } = useFormState({ control });
+  const isKorean =
+    parsePhoneNumber(context.phoneNumber, 'KR')?.country === 'KR';
 
   return (
     <form onSubmit={onSubmit}>
@@ -45,7 +48,11 @@ export function TelCodeStep({
               currentStep={RegisterSteps.indexOf('telCode')}
               totalSteps={RegisterSteps.length}
             />
-            {t('register.steps.tel_code.title')}
+            {t(
+              isKorean
+                ? 'register.steps.tel_code.title_kakao'
+                : 'register.steps.tel_code.title',
+            )}
           </div>
         }
         button={

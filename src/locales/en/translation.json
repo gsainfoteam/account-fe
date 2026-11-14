@@ -70,7 +70,6 @@
         }
       },
       "tel": {
-        "unavailable": "Phone verification is temporarily unavailable. Please contact us at <0>cs.gistory.me</0>.",
         "title": "Please enter your phone number",
         "button": "Verify Phone Number",
         "inputs": {
@@ -85,6 +84,7 @@
       },
       "tel_code": {
         "title": "Enter the 6-digit code\nsent to your phone number",
+        "title_kakao": "Enter the 6-digit code\nsent via KakaoTalk or text message",
         "button": "Verify",
         "resend": "Resend Code",
         "inputs": {
@@ -366,7 +366,6 @@
     "title": "Verify Phone Number",
     "steps": {
       "tel": {
-        "unavailable": "Phone verification is temporarily unavailable. Please contact us at <0>cs.gistory.me</0>.",
         "title": "Please enter your phone number",
         "button": "Send Verification Code",
         "inputs": {
@@ -381,6 +380,7 @@
       },
       "code": {
         "title": "Enter the 6-digit code\nsent to your phone number",
+        "title_kakao": "Enter the 6-digit code\nsent via KakaoTalk or text message",
         "button": "Verify",
         "resend": "Resend Code",
         "inputs": {
