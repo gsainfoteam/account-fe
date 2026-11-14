@@ -1,5 +1,5 @@
 import { useFormState } from 'react-hook-form';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useTelForm } from '../../hooks/register-steps/use-tel-form';
 import { RegisterSteps } from '../register-frame';
@@ -22,7 +22,7 @@ export function TelStep({
     onSubmit,
   } = useTelForm({ onNext });
 
-  const { isSubmitting, errors } = useFormState({ control });
+  const { isSubmitting, isValid, isDirty, errors } = useFormState({ control });
   const { t } = useTranslation();
 
   return (
@@ -46,27 +46,13 @@ export function TelStep({
               variant="primary"
               className="w-full"
               loading={isSubmitting}
-              disabled // 휴대전화 본인인증 일시 중단
+              disabled={!(isValid && isDirty)}
             >
               {t('register.steps.tel.button')}
             </Button>
           </LogClick>
         }
       >
-        <p className="text-label text-warning-900 dark:text-warning-300">
-          <Trans
-            i18nKey="register.steps.tel.unavailable"
-            components={[
-              <a
-                key="cs-link"
-                href="https://cs.gistory.me"
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              />,
-            ]}
-          />
-        </p>
         <Label text={t('register.steps.tel.inputs.phone_number.label')}>
           <TelInput
             name="phoneNumber"

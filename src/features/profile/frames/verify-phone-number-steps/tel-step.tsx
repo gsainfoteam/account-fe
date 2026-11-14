@@ -1,5 +1,5 @@
 import { useFormState } from 'react-hook-form';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { useVerifyPhoneNumberForm } from '../../hooks/use-verify-phone-number-form';
 
@@ -13,7 +13,7 @@ export function TelStep({
     form: { control },
     onSubmit,
   } = useVerifyPhoneNumberForm({ onNext });
-  const { isSubmitting, errors } = useFormState({ control });
+  const { isSubmitting, isValid, errors } = useFormState({ control });
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -29,27 +29,13 @@ export function TelStep({
             variant="primary"
             className="w-full"
             loading={isSubmitting}
-            disabled // 휴대전화 본인인증 일시 중단
+            disabled={!isValid}
           >
             {t('verify_phone_number.steps.tel.button')}
           </Button>
         }
       >
         <div className="flex flex-col gap-5">
-          <p className="text-label text-warning-900 dark:text-warning-300">
-            <Trans
-              i18nKey="verify_phone_number.steps.tel.unavailable"
-              components={[
-                <a
-                  key="cs-link"
-                  href="https://cs.gistory.me"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                />,
-              ]}
-            />
-          </p>
           <Label
             text={t('verify_phone_number.steps.tel.inputs.phone_number.label')}
           >
