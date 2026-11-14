@@ -29,7 +29,7 @@ export function TelStep({
             variant="primary"
             className="w-full"
             loading={isSubmitting}
-            disabled={!isValid}
+            disabled={isSubmitting || !isValid}
           >
             {t('verify_phone_number.steps.tel.button')}
           </Button>

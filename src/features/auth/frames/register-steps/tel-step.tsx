@@ -46,7 +46,7 @@ export function TelStep({
               variant="primary"
               className="w-full"
               loading={isSubmitting}
-              disabled={!(isValid && isDirty)}
+              disabled={isSubmitting || !(isValid && isDirty)}
             >
               {t('register.steps.tel.button')}
             </Button>
