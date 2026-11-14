@@ -70,6 +70,7 @@
         }
       },
       "tel": {
+        "unavailable": "Phone verification is temporarily unavailable. Please contact us at <0>cs.gistory.me</0>.",
         "title": "Please enter your phone number",
         "button": "Verify Phone Number",
         "inputs": {
@@ -365,6 +366,7 @@
     "title": "Verify Phone Number",
     "steps": {
       "tel": {
+        "unavailable": "Phone verification is temporarily unavailable. Please contact us at <0>cs.gistory.me</0>.",
         "title": "Please enter your phone number",
         "button": "Send Verification Code",
         "inputs": {
