@@ -23,6 +23,7 @@ import {
   LoadingEllipse,
   LogClick,
   StepProgress,
+  useTheme,
 } from '@/features/core';
 
 function TermsDialogOverlay({
@@ -39,6 +40,7 @@ function TermsDialogOverlay({
   isTermsVersionLoading: boolean;
 }) {
   const { t } = useTranslation();
+  const { theme } = useTheme();
 
   return (
     <Dialog
@@ -55,7 +57,7 @@ function TermsDialogOverlay({
           </div>
         ) : (
           <iframe
-            src={iframeSrc}
+            src={`${iframeSrc}?theme=${theme}`}
             title={title}
             className="h-[60vh] w-full border-0"
           />
